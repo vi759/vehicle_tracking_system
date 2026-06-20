@@ -1,0 +1,11 @@
+flask
+mysql-connector-python
+opencv-python
+easyocr
+openpyxl
+pandas
+numpy
+imutils
+xlwt
+python-dotenv
+bcrypt
