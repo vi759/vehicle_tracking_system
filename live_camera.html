@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}Live Monitor - VTS{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div>
+        <h1 class="page-title"><i class="fas fa-video"></i> Live Camera Feed</h1>
+        <p class="page-subtitle">Real-time camera monitoring stream.</p>
+    </div>
+</div>
+
+<div class="card">
+    <div style="text-align: center; background: #1a1a1a; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-lg);">
+        <!-- Live feed from Flask generator -->
+        <img src="/live_camera" style="width: 100%; max-width: 800px; height: auto; display: block; margin: 0 auto;">
+    </div>
+    <div style="margin-top: 1.25rem; text-align: center; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+        <span class="live-dot"></span>
+        Live Feed Active
+    </div>
+</div>
+{% endblock %}

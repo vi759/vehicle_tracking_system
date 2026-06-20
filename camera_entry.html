@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block title %}Camera Entry - VTS{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div>
+        <h1 class="page-title"><i class="fas fa-camera"></i> Automatic Entry Detection</h1>
+        <p class="page-subtitle">Capture a vehicle image to automatically detect the plate and color.</p>
+    </div>
+</div>
+
+<div class="card" style="max-width: 800px;">
+
+    <div style="margin-bottom: 2rem; text-align: center;">
+        <form action="/camera_entry" method="POST">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-camera"></i> Capture & Process
+            </button>
+        </form>
+    </div>
+
+    {% if image_path %}
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+
+        <div>
+            <h3 class="mb-2" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-image" style="color: var(--primary);"></i> Captured Image
+            </h3>
+            <img src="/{{ image_path }}"
+                style="width: 100%; border-radius: var(--radius); border: 2px solid var(--border-light); box-shadow: var(--shadow);">
+        </div>
+
+        <div>
+            <h3 class="mb-2" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-magnifying-glass" style="color: var(--secondary);"></i> Detection Results
+            </h3>
+
+            <div style="background: var(--primary-light); padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--border-light);">
+
+                <div class="mb-4">
+                    <div class="info-label">Detected Plate</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; color: var(--text-main); font-family: monospace;">
+                        {{ detected_plate }}</div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="info-label">Detected Color</div>
+                    <div style="font-size: 1.3rem; font-weight: 700; color: var(--text-main);">
+                        {{ detected_color }}
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                    <div style="color: var(--success); font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-circle-check"></i> Entry Recorded Automatically
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-camera-retro"></i>
+        <p>Click "Capture & Process" to trigger vehicle detection.</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

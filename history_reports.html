@@ -1,0 +1,211 @@
+{% extends "layout.html" %}
+
+{% block title %}History & Reports - VTS{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1 class="page-title"><i class="fas fa-chart-line"></i> History & Reports</h1>
+    <div>
+        <a href="/export_excel" class="btn btn-success">
+            <i class="fas fa-file-excel"></i> Download Excel
+        </a>
+    </div>
+</div>
+
+<!-- Tab Navigation -->
+<div class="tabs-container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('overview')">
+            <i class="fas fa-chart-pie"></i> Overview
+        </button>
+        <button class="tab-btn" onclick="switchTab('analytics')">
+            <i class="fas fa-chart-bar"></i> Analytics
+        </button>
+        <button class="tab-btn" onclick="switchTab('records')">
+            <i class="fas fa-table"></i> Detailed Records
+        </button>
+    </div>
+</div>
+
+<!-- Overview Tab -->
+<div id="overview" class="tab-content active">
+    <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));">
+        <div class="stat-card">
+            <div class="stat-label">Total Vehicles</div>
+            <div class="stat-value" id="totalVehicles" style="color: var(--primary);">0</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">All Time</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Currently Inside</div>
+            <div class="stat-value" id="currentInside" style="color: var(--success);">0</div>
+            <div style="color: var(--success); font-size: 0.85rem; font-weight: 600;">Active</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Today's Entries</div>
+            <div class="stat-value" id="todayEntries" style="color: var(--secondary);">0</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">{{ today_date }}</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Today's Exits</div>
+            <div class="stat-value" id="todayExits" style="color: var(--danger);">0</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">{{ today_date }}</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Avg. Duration</div>
+            <div class="stat-value" id="avgDuration" style="font-size: 2rem; color: var(--primary);">0</div>
+            <div style="color: var(--text-muted); font-size: 0.85rem;">Minutes</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-info-circle" style="color: var(--secondary);"></i> Quick Summary
+        </h2>
+        <p style="color: var(--text-muted); line-height: 1.8;">
+            This dashboard provides comprehensive analytics and reports for vehicle tracking.
+            View trends, analyze peak hours, and export detailed reports for record-keeping.
+        </p>
+    </div>
+</div>
+
+<!-- Analytics Tab -->
+<div id="analytics" class="tab-content">
+    <div class="chart-grid">
+        <div class="card">
+            <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-calendar-week" style="color: var(--primary);"></i> Weekly Traffic Trend
+            </h3>
+            <div class="chart-container" style="height: 300px;">
+                <canvas id="weeklyChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-clock" style="color: var(--secondary);"></i> Peak Hours Analysis
+            </h3>
+            <div class="chart-container" style="height: 300px;">
+                <canvas id="hourlyChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-palette" style="color: var(--primary);"></i> Vehicle Color Distribution
+            </h3>
+            <div class="chart-container" style="height: 300px;">
+                <canvas id="colorChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detailed Records Tab -->
+<div id="records" class="tab-content">
+    <div class="card">
+        <div
+            style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <input type="date" id="startDate" style="max-width: 180px;">
+                <input type="date" id="endDate" style="max-width: 180px;">
+                <button class="btn btn-primary" onclick="filterRecords()">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+            </div>
+            <input type="text" id="searchRecords" onkeyup="searchRecordsTable()"
+                placeholder="🔍 Search by vehicle number..." style="max-width: 300px;">
+        </div>
+
+        <div class="table-container">
+            <table id="recordsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Vehicle Number</th>
+                        <th>Owner/Driver</th>
+                        <th>Color</th>
+                        <th>Entry Time</th>
+                        <th>Exit Time</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vehicle in vehicles %}
+                    <tr>
+                        <td style="color: var(--text-muted); font-weight: 600;">#{{ vehicle[0] }}</td>
+                        <td style="font-weight: 700; font-family: monospace; color: var(--primary);">{{ vehicle[1] }}</td>
+                        <td>{{ vehicle[2] or '-' }}</td>
+                        <td>
+                            {% if vehicle[3] %}
+                            <span style="display: inline-block; width: 12px; height: 12px;
+                                        background-color: {{ vehicle[3] }}; border: 2px solid var(--border);
+                                        border-radius: 50%; margin-right: 5px; vertical-align: middle;"></span>
+                            {{ vehicle[3] }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>{{ vehicle[4] }}</td>
+                        <td>{{ vehicle[5] or '-' }}</td>
+                        <td>
+                            {% if vehicle[5] %}
+                            {% set duration = ((vehicle[5] - vehicle[4]).total_seconds() / 60) | int %}
+                            {{ duration }} min
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if vehicle[6] == 'INSIDE' %}
+                            <span class="status-badge status-inside"><i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 4px;"></i>Inside</span>
+                            {% else %}
+                            <span class="status-badge status-exited"><i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 4px;"></i>Exited</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if vehicle[7] == 'CAMERA' %}
+                            <span style="color: var(--primary); font-weight: 600;">
+                                <i class="fas fa-camera"></i> Camera
+                            </span>
+                            {% else %}
+                            <span style="color: var(--secondary); font-weight: 600;">
+                                <i class="fas fa-keyboard"></i> Manual
+                            </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+<script>
+    function searchRecordsTable() {
+        var input = document.getElementById("searchRecords");
+        var filter = input.value.toUpperCase();
+        var table = document.getElementById("recordsTable");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < tr.length; i++) {
+            var td = tr[i].getElementsByTagName("td")[1]; // Vehicle Number column
+            if (td) {
+                var text = td.textContent || td.innerText;
+                if (text.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}

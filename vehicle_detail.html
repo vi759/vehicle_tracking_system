@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block title %}Vehicle Details - VTS{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1 class="page-title"><i class="fas fa-car"></i> Vehicle #{{ vehicle[0] }}</h1>
+    <a href="/vehicle_records" class="btn btn-outline">
+        <i class="fas fa-arrow-left"></i> Back to Records
+    </a>
+</div>
+
+<div class="card">
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2.5rem;">
+
+        <!-- Image Section -->
+        <div>
+            <h3 class="mb-2" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-image" style="color: var(--primary);"></i> Vehicle Image
+            </h3>
+            {% if vehicle[8] %}
+            <img src="/{{ vehicle[8] }}"
+                style="width: 100%; border-radius: var(--radius); border: 2px solid var(--border-light); box-shadow: var(--shadow);">
+            {% else %}
+            <div
+                style="width: 100%; height: 220px; background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary-light) 100%); display: flex; align-items: center; justify-content: center; border-radius: var(--radius); color: var(--text-muted); flex-direction: column; gap: 0.5rem;">
+                <i class="fas fa-image" style="font-size: 2rem; color: var(--text-light);"></i>
+                <span>No Image Available</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Details Section -->
+        <div>
+            <h3 class="mb-4" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-info-circle" style="color: var(--secondary);"></i> Information
+            </h3>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+
+                <div class="info-item">
+                    <div class="info-label">Vehicle Number</div>
+                    <div style="font-size: 1.5rem; font-weight: 800; font-family: monospace; color: var(--primary);">{{ vehicle[1] }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Status</div>
+                    <div style="margin-top: 0.25rem;">
+                        {% if vehicle[6] == 'INSIDE' %}
+                        <span class="status-badge status-inside" style="font-size: 0.9rem; padding: 0.4rem 1rem;">
+                            <i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 4px;"></i>Inside
+                        </span>
+                        {% else %}
+                        <span class="status-badge status-exited" style="font-size: 0.9rem; padding: 0.4rem 1rem;">
+                            <i class="fas fa-circle" style="font-size: 0.5rem; margin-right: 4px;"></i>Exited
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Owner / Driver</div>
+                    <div class="info-value">{{ vehicle[2] or 'N/A' }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Color</div>
+                    <div class="info-value" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="display: inline-block; width: 14px; height: 14px; background-color: {{ vehicle[3] }}; border: 2px solid var(--border); border-radius: 50%;"></span>
+                        {{ vehicle[3] }}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Entry Time</div>
+                    <div class="info-value">{{ vehicle[4] }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Exit Time</div>
+                    <div class="info-value">{{ vehicle[5] or '—' }}</div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">Detection Type</div>
+                    <div class="info-value">
+                        {% if vehicle[7] == 'CAMERA' %}
+                        <i class="fas fa-camera" style="color: var(--primary); margin-right: 4px;"></i>
+                        {% else %}
+                        <i class="fas fa-keyboard" style="color: var(--secondary); margin-right: 4px;"></i>
+                        {% endif %}
+                        {{ vehicle[7] }}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

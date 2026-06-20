@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Vehicle Tracking System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="brand">
+            🚗 VTS Admin
+        </div>
+
+        <div class="sidebar-subtitle">Navigation</div>
+
+        <nav class="nav-links">
+            <a href="/admin_dashboard" class="nav-item {% if request.path == '/admin_dashboard' %}active{% endif %}">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <a href="/camera_entry" class="nav-item {% if request.path == '/camera_entry' %}active{% endif %}">
+                <i class="fas fa-camera"></i> Camera Entry
+            </a>
+            <a href="/manual_entry" class="nav-item {% if request.path == '/manual_entry' %}active{% endif %}">
+                <i class="fas fa-pen-to-square"></i> Manual Entry
+            </a>
+            <a href="/vehicle_exit" class="nav-item {% if request.path == '/vehicle_exit' %}active{% endif %}">
+                <i class="fas fa-right-from-bracket"></i> Vehicle Exit
+            </a>
+            <a href="/vehicle_records" class="nav-item {% if request.path == '/vehicle_records' %}active{% endif %}">
+                <i class="fas fa-list"></i> Vehicle Records
+            </a>
+            <a href="/history_reports" class="nav-item {% if request.path == '/history_reports' %}active{% endif %}">
+                <i class="fas fa-chart-line"></i> History & Reports
+            </a>
+            <a href="/live_camera_page" class="nav-item {% if request.path == '/live_camera_page' %}active{% endif %}">
+                <i class="fas fa-video"></i> Live Camera
+            </a>
+
+            <a href="/logout" class="nav-item danger">
+                <i class="fas fa-power-off"></i> Logout
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+
+</html>
